@@ -13,10 +13,10 @@ import { Command, getCurrentTaskInput } from "@langchain/langgraph";
 import { ToolRunnableConfig } from "@langchain/core/tools";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { z } from "zod";
-import type { LanguageModelLike, SubAgent } from "./types.js";
-import { getDefaultModel } from "./model.js";
-import { writeTodos, readFile, writeFile, editFile, ls } from "./tools.js";
-import { TASK_DESCRIPTION_PREFIX, TASK_DESCRIPTION_SUFFIX } from "./prompts.js";
+import type { LanguageModelLike, SubAgent } from "./types";
+import { getDefaultModel } from "./model";
+import { writeTodos, readFile, writeFile, editFile, ls } from "./tools";
+import { TASK_DESCRIPTION_PREFIX, TASK_DESCRIPTION_SUFFIX } from "./prompts";
 
 /**
  * Built-in tools map for tool resolution by name

@@ -7,7 +7,7 @@
 
 import "@langchain/langgraph/zod";
 import { MessagesZodState } from "@langchain/langgraph";
-import type { Todo } from "./types.js";
+import type { Todo } from "./types";
 import { withLangGraph } from "@langchain/langgraph/zod";
 import { z } from "zod";
 

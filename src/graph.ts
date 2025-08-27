@@ -9,13 +9,13 @@
 
 // import "@langchain/anthropic/zod";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
-import { createTaskTool } from "./subAgent.js";
-import { getDefaultModel } from "./model.js";
-import { writeTodos, readFile, writeFile, editFile, ls } from "./tools.js";
-import type { CreateDeepAgentParams } from "./types.js";
+import { createTaskTool } from "./subAgent";
+import { getDefaultModel } from "./model";
+import { writeTodos, readFile, writeFile, editFile, ls } from "./tools";
+import type { CreateDeepAgentParams } from "./types";
 import type { StructuredTool } from "@langchain/core/tools";
 import { z } from "zod";
-import { DeepAgentState } from "./state.js";
+import { DeepAgentState } from "./state";
 
 /**
  * Base prompt that provides instructions about available tools
@@ -58,7 +58,6 @@ export function createDeepAgent<
     instructions,
     model = getDefaultModel(),
     subagents = [],
-    postModelHook,
   } = params;
 
   const stateSchema = params.stateSchema
@@ -96,7 +95,6 @@ export function createDeepAgent<
     llm: model,
     tools: allTools,
     stateSchema,
-    messageModifier: finalInstructions,
-    postModelHook,
+    messageModifier: finalInstructions
   });
 }

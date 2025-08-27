@@ -14,8 +14,8 @@ import {
   WRITE_TODOS_DESCRIPTION,
   EDIT_DESCRIPTION,
   TOOL_DESCRIPTION,
-} from "./prompts.js";
-import { DeepAgentStateType } from "./types.js";
+} from "./prompts";
+import { DeepAgentStateType } from "./types";
 
 /**
  * Write todos tool - manages todo list with Command return

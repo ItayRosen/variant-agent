@@ -6,7 +6,7 @@
  */
 
 import { ChatAnthropic } from "@langchain/anthropic";
-import { LanguageModelLike } from "./types.js";
+import { LanguageModelLike } from "./types";
 
 /**
  * Get the default model for Deep Agents

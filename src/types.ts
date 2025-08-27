@@ -12,7 +12,7 @@ import type {
   LanguageModelOutput,
 } from "@langchain/core/language_models/base";
 import type { StructuredTool } from "@langchain/core/tools";
-import type { DeepAgentState } from "./state.js";
+import type { DeepAgentState } from "./state";
 import { z } from "zod";
 import { Runnable } from "@langchain/core/runnables";
 
