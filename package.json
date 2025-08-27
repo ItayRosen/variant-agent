@@ -15,6 +15,7 @@
     "@langchain/core": "^0.3.66",
     "@langchain/langgraph": "^0.4.6",
     "@langchain/mcp-adapters": "^0.6.0",
+    "@playwright/mcp": "^0.0.35",
     "zod": "^3.25.32"
   },
   "devDependencies": {

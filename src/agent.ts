@@ -38,6 +38,7 @@ let agent: CompiledStateGraph<any, any, any, any, any>;
 // Invoke the agent
 async function main() {
   console.log('Starting..');
+  console.log('anthropic key ', process.env.ANTHROPIC_API_KEY);
 
   const tools = await client.getTools();
 
@@ -57,16 +58,16 @@ async function startServer(): Promise<void> {
   const app = express();
   app.use(express.json());
 
+  app.get("/health", (_req: Request, res: Response) => {
+    res.status(200).json({ status: "ok" });
+  });
+
   app.post("/message", async (req: Request, res: Response) => {
     try {
-      const { content } = req.body ?? {};
-      if (typeof content !== "string" || content.length === 0) {
-        res.status(400).json({ error: "'content' must be a non-empty string" });
-        return;
-      }
+      const { content, thread_id } = req.body;
 
       const message: BaseMessage = new HumanMessage(content);
-      const result = await addMessage(message);
+      const result = await addMessage(message, thread_id);
       res.json(result);
     } catch (error) {
       res.status(500).json({ error: "Internal Server Error" });
@@ -82,10 +83,16 @@ async function startServer(): Promise<void> {
   });
 }
 
-async function addMessage(message: BaseMessage) {
+async function addMessage(message: BaseMessage, thread_id: string) {
   const result = await agent.invoke({
     messages: [message],
+  }, {
+    configurable: {
+      thread_id: thread_id,
+    }
   });
+
+  console.log(result);
   return result;
 }
 
