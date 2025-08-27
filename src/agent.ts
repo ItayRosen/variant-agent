@@ -74,7 +74,7 @@ async function startServer(): Promise<void> {
     }
   });
 
-  const port = Number(process.env.PORT ?? 3000);
+  const port = Number(10000);
   await new Promise<void>((resolve) => {
     app.listen(port, () => {
       console.log(`Server listening on port ${port}`);
