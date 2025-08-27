@@ -13,12 +13,11 @@ const researchInstructions = `
 - If something is unclear or you are unsure of how to implement the experiment, ask the user.
 - Use the playwright mcp server to navigate to the location of the experiment, retrieve the DOM, run the JS script and test that the final result actually works.`;
 
-const experimentInstructions = `let's create an additional button warranty option that should appear as soon as the cart is loaded. It should say: ""1 Year"" and it's protecction price shoul be $0.00. It should be pre-selected, and designed exactly like the rest of the warranty selection buttons. When another warranty button is selected, it should look like a non-selected option`;
-const website = 'https://babyark.com';
 
-const prompt = `The website is ${website}.
+const prompt = `The website is https://babyark.com.
 
-The experiment instructions are: ${experimentInstructions}.
+The experiment instructions are:
+let's create an additional button warranty option that should appear as soon as the cart is loaded. It should say: ""1 Year"" and it's protecction price shoul be $0.00. It should be pre-selected, and designed exactly like the rest of the warranty selection buttons. When another warranty button is selected, it should look like a non-selected option
 `;
 
 // MCP 
@@ -38,7 +37,7 @@ let agent: CompiledStateGraph<any, any, any, any, any>;
 // Invoke the agent
 async function main() {
   console.log('Starting..');
-  console.log('anthropic key ', process.env.ANTHROPIC_API_KEY);
+  await startServer();
 
   const tools = await client.getTools();
 
@@ -49,7 +48,6 @@ async function main() {
     subagents: [],
   }).withConfig({ recursionLimit: 1000 });
 
-  await startServer();
 
   console.log('Application started');
 }
