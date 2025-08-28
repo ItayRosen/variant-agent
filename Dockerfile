@@ -11,7 +11,9 @@ COPY package*.json ./
 RUN npm install --no-audit --no-fund
 
 # Install playwright
-RUN npx playwright install --with-deps chromium
+# Install required browsers (install Chrome channel to satisfy MCP default)
+RUN npx playwright install --with-deps chrome && \
+    npx playwright install --with-deps chromium
 
 # Copy TypeScript config and source files
 COPY tsconfig.json ./

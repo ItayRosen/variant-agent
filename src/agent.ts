@@ -26,7 +26,7 @@ const client = new MultiServerMCPClient({
     "playwright": {
       "command": "npx",
       "args": [
-        "@playwright/mcp@latest",
+        "@playwright/mcp",
         "--isolated"
       ]
     }
