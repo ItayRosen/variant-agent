@@ -10,6 +10,9 @@ COPY package*.json ./
 # Use npm install to avoid lockfile mismatch failures in remote builds
 RUN npm install --no-audit --no-fund
 
+# Install playwright
+RUN npx playwright install --with-deps chromium
+
 # Copy TypeScript config and source files
 COPY tsconfig.json ./
 COPY src ./src
