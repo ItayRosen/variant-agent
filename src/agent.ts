@@ -3,7 +3,7 @@ import express, { Request, Response } from "express";
 import { MultiServerMCPClient } from "@langchain/mcp-adapters";
 import { createDeepAgent } from "./graph";
 import { BaseMessage, HumanMessage } from "@langchain/core/messages";
-import { CompiledStateGraph } from "@langchain/langgraph";
+import { CompiledStateGraph, MemorySaver } from "@langchain/langgraph";
 
 const researchInstructions = `
 # Guidelines
@@ -26,7 +26,8 @@ const client = new MultiServerMCPClient({
     "playwright": {
       "command": "npx",
       "args": [
-        "@playwright/mcp@latest"
+        "@playwright/mcp@latest",
+        "--isolated"
       ]
     }
   },
@@ -48,7 +49,6 @@ async function main() {
     subagents: [],
   }).withConfig({ recursionLimit: 1000 });
 
-
   console.log('Application started');
 }
 
@@ -62,14 +62,25 @@ async function startServer(): Promise<void> {
 
   app.post("/message", async (req: Request, res: Response) => {
     try {
-      const { content, thread_id } = req.body;
-
-      const message: BaseMessage = new HumanMessage(content);
-      const result = await addMessage(message, thread_id);
-      res.json(result);
+      const { message, thread_id } = req.body;
+      console.log('adding message', { message, thread_id });
+      for await (const chunk of await agent.stream(
+        { messages: [message] },
+        { streamMode: "updates", configurable: { thread_id: thread_id } }
+      )) {
+        console.log(chunk);
+        console.log("\n");
+      }
+      res.json({ status: "ok" });
     } catch (error) {
       res.status(500).json({ error: "Internal Server Error" });
     }
+  });
+
+  app.get("/thread/:thread_id", async (req: Request, res: Response) => {
+    const { thread_id } = req.params;
+    const state = await getState(thread_id);
+    res.json(state);
   });
 
   const port = Number(10000);
@@ -81,17 +92,9 @@ async function startServer(): Promise<void> {
   });
 }
 
-async function addMessage(message: BaseMessage, thread_id: string) {
-  const result = await agent.invoke({
-    messages: [message],
-  }, {
-    configurable: {
-      thread_id: thread_id,
-    }
-  });
-
-  console.log(result);
-  return result;
+async function getState(thread_id: string) {
+  const state = await agent.getState({ configurable: { thread_id: thread_id } });
+  return state;
 }
 
 main();

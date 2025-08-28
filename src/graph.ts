@@ -1,13 +1,3 @@
-/**
- * Main createDeepAgent function for Deep Agents
- *
- * Main entry point for creating deep agents with TypeScript types for all parameters:
- * tools, instructions, model, subagents, and stateSchema. Combines built-in tools with
- * provided tools, creates task tool using createTaskTool(), and returns createReactAgent
- * with proper configuration. Ensures exact parameter matching and behavior with Python version.
- */
-
-// import "@langchain/anthropic/zod";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { createTaskTool } from "./subAgent";
 import { getDefaultModel } from "./model";
@@ -16,6 +6,8 @@ import type { CreateDeepAgentParams } from "./types";
 import type { StructuredTool } from "@langchain/core/tools";
 import { z } from "zod";
 import { DeepAgentState } from "./state";
+import { MemorySaver } from "@langchain/langgraph";
+const checkpointer = new MemorySaver();
 
 /**
  * Base prompt that provides instructions about available tools
@@ -95,6 +87,7 @@ export function createDeepAgent<
     llm: model,
     tools: allTools,
     stateSchema,
-    messageModifier: finalInstructions
+    messageModifier: finalInstructions,
+    checkpointer,
   });
 }
