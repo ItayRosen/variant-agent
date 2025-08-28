@@ -10,10 +10,17 @@ COPY package*.json ./
 # Use npm install to avoid lockfile mismatch failures in remote builds
 RUN npm install --no-audit --no-fund
 
-# Install playwright
-# Install required browsers (install Chrome channel to satisfy MCP default)
-RUN npx playwright install --with-deps chrome && \
-    npx playwright install --with-deps chromium
+# Install system Google Chrome (MCP defaults to channel 'chrome' at /opt/google/chrome/chrome)
+RUN apt-get update && \
+    apt-get install -y wget gnupg ca-certificates && \
+    wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-linux-keyring.gpg && \
+    sh -c 'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-linux-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list' && \
+    apt-get update && \
+    apt-get install -y google-chrome-stable && \
+    rm -rf /var/lib/apt/lists/*
+
+# Ensure Playwright browsers also present (chromium)
+RUN npx playwright install --with-deps chromium
 
 # Copy TypeScript config and source files
 COPY tsconfig.json ./
