@@ -6,8 +6,9 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install ALL dependencies (including dev) for building and browsers
-RUN npm ci && npx playwright install --with-deps chromium
+# Install ALL dependencies (including dev) for building
+# Use npm install to avoid lockfile mismatch failures in remote builds
+RUN npm install --no-audit --no-fund
 
 # Copy TypeScript config and source files
 COPY tsconfig.json ./
