@@ -29,4 +29,4 @@ USER agent
 # Set environment variables
 ENV CHROMIUM_PATH=/usr/bin/chromium
 
-CMD ["node", "dist/index.js"]
+CMD ["node", "dist/agent.js"]
