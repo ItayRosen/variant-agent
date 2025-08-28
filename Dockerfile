@@ -19,8 +19,9 @@ RUN apt-get update && \
     apt-get install -y google-chrome-stable && \
     rm -rf /var/lib/apt/lists/*
 
-# Ensure Playwright browsers also present (chromium)
-RUN npx playwright install --with-deps chromium
+# Ensure Playwright browsers also present (chromium + chrome channel)
+RUN npx playwright install --with-deps chromium && \
+    npx playwright install chrome
 
 # Copy TypeScript config and source files
 COPY tsconfig.json ./
