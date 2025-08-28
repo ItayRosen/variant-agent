@@ -9,13 +9,6 @@ import { DeepAgentState } from "./state";
 import { MongoDBSaver } from "@langchain/langgraph-checkpoint-mongodb";
 import { getMongoClient } from "./mongodb";
 
-const checkpointer = new MongoDBSaver({
-  client: getMongoClient(),
-  dbName: 'variant-agent',
-  checkpointCollectionName: 'langgraph_checkpoints',
-  checkpointWritesCollectionName: 'langgraph_checkpoints_writes',
-});
-
 /**
  * Base prompt that provides instructions about available tools
  * Ported from Python implementation to ensure consistent behavior
@@ -88,6 +81,13 @@ export function createDeepAgent<
   const finalInstructions = instructions
     ? instructions + BASE_PROMPT
     : BASE_PROMPT;
+
+  const checkpointer = new MongoDBSaver({
+    client: getMongoClient(),
+    dbName: 'variant-agent',
+    checkpointCollectionName: 'langgraph_checkpoints',
+    checkpointWritesCollectionName: 'langgraph_checkpoints_writes',
+  });
 
   // Return createReactAgent with proper configuration
   return createReactAgent({

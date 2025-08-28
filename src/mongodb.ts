@@ -2,9 +2,11 @@ import { MongoClient } from 'mongodb';
 
 let client: MongoClient | null = null;
 
-export function initMongoClient(): MongoClient {
+export async function initMongoClient(): Promise<MongoClient> {
   if (!client) {
+    console.log('Initializing MongoDB client');
     client = new MongoClient(process.env.MONGODB_URI || '');
+    await client.connect();
   }
   return client;
 }
