@@ -6,8 +6,15 @@ import type { CreateDeepAgentParams } from "./types";
 import type { StructuredTool } from "@langchain/core/tools";
 import { z } from "zod";
 import { DeepAgentState } from "./state";
-import { MemorySaver } from "@langchain/langgraph";
-const checkpointer = new MemorySaver();
+import { MongoDBSaver } from "@langchain/langgraph-checkpoint-mongodb";
+import { getMongoClient } from "./mongodb";
+
+const checkpointer = new MongoDBSaver({
+  client: getMongoClient(),
+  dbName: 'variant-agent',
+  checkpointCollectionName: 'langgraph_checkpoints',
+  checkpointWritesCollectionName: 'langgraph_checkpoints_writes',
+});
 
 /**
  * Base prompt that provides instructions about available tools

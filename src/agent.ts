@@ -2,8 +2,8 @@ import "dotenv/config";
 import express, { Request, Response } from "express";
 import { MultiServerMCPClient } from "@langchain/mcp-adapters";
 import { createDeepAgent } from "./graph";
-import { BaseMessage, HumanMessage } from "@langchain/core/messages";
-import { CompiledStateGraph, MemorySaver } from "@langchain/langgraph";
+import { CompiledStateGraph } from "@langchain/langgraph";
+import { initMongoClient } from "./mongodb";
 
 const researchInstructions = `
 # Guidelines
@@ -38,6 +38,7 @@ let agent: CompiledStateGraph<any, any, any, any, any>;
 // Invoke the agent
 async function main() {
   console.log('Starting..');
+  await initMongoClient();
   await startServer();
 
   const tools = await client.getTools();
