@@ -4,6 +4,8 @@ import { MultiServerMCPClient } from "@langchain/mcp-adapters";
 import { createDeepAgent } from "./graph";
 import { CompiledStateGraph } from "@langchain/langgraph";
 import { initMongoClient } from "./mongodb";
+import swaggerUi from "swagger-ui-express";
+import { swaggerSpec } from "./swagger";
 
 const researchInstructions = `
 # Guidelines
@@ -60,6 +62,13 @@ async function startServer(): Promise<void> {
   app.get("/health", (_req: Request, res: Response) => {
     res.status(200).json({ status: "ok" });
   });
+
+  app.get("/docs.json", (_req: Request, res: Response) => {
+    res.setHeader("Content-Type", "application/json");
+    res.send(swaggerSpec);
+  });
+
+  app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
   // Authentication middleware (protects all routes except /health)
   const apiToken = process.env.API_TOKEN;
