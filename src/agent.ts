@@ -1,5 +1,5 @@
 import "dotenv/config";
-import express, { Request, Response } from "express";
+import express, { Request, Response, NextFunction } from "express";
 import { MultiServerMCPClient } from "@langchain/mcp-adapters";
 import { createDeepAgent } from "./graph";
 import { CompiledStateGraph } from "@langchain/langgraph";
@@ -61,9 +61,25 @@ async function startServer(): Promise<void> {
     res.status(200).json({ status: "ok" });
   });
 
-  app.post("/message", async (req: Request, res: Response) => {
+  // Authentication middleware (protects all routes except /health)
+  const apiToken = process.env.API_TOKEN;
+  if (!apiToken) {
+    throw new Error("API_TOKEN env variable is not set");
+  }
+  const authenticate = (req: Request, res: Response, next: NextFunction) => {
+    const authHeader = req.header("Authorization");
+    if (authHeader === `Bearer ${apiToken}`) {
+      return next();
+    }
+    return res.status(401).json({ error: "Unauthorized" });
+  };
+
+  app.use(authenticate);
+
+  app.post("/thread/:thread_id/message", async (req: Request, res: Response) => {
     try {
-      const { message, thread_id } = req.body;
+      const { message } = req.body;
+      const { thread_id } = req.params;
       console.log('adding message', { message, thread_id });
       for await (const chunk of await agent.stream(
         { messages: [message] },
